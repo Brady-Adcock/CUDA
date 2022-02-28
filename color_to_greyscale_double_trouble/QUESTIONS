@@ -1,0 +1,42 @@
+In addition to implementing the device code, answer the following questions:
+1)  If you run the program like this:
+   ./greyscalar -bw 16 -bh 16 file.ppm
+   how many data elements are calculated by a single internal block?
+   16*16*2 = 512
+
+
+2)  If you run the program like this:
+   ./greyscalar -bw 8 -bh 16 file.ppm
+   how many data elements are calculated by a single internal block? 
+   8*16*2 = 256
+
+3) Suppose the size of the image is 1000 by 2000 (width by height) and the
+size of the created blocks are 16 by 16.  How many blocks are launched?
+   32 x 125 x 1
+
+4) Suppose the size of the image is 1000 by 2000 (width by height) and the
+size of the created blocks are 16 by 16.
+
+a. How many threads are launched?
+   32*125*1*16*16 = 1024000
+
+b. How many of those threads will have no work to do?
+   1000000 - 1024000 = 24000
+
+5) Recall that the GPU on our Cuda server has 20 Streaming Multiprocessors. Each
+Streaming Multiprocessor can handle a maximum of 32 blocks and
+2048 threads. The maximum number of threads in a block is 1024.
+What is a problem with having blocks of size 4 by 8?   
+   4*8 = 32 threads per block 
+   32*32 = 1024 threads per SM
+   We are utilzing 50% of the SM (We can change the blocks to 8x8 for full usage)
+
+
+6) Compile the code with the optimization flags turned on and run the
+dotests.sh script. You should see from the results that blocks of size 32 by 32
+provide better performance than blocks of size 8 by 8.  Why?
+   We don't see any real performance improvement between the two.
+   Although, if there is one, we think its because of the overhead of trying to copy a bigger
+   number of blocks.
+
+

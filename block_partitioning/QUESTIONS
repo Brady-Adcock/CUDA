@@ -1,0 +1,71 @@
+1) Consider the very simple case of 5 blocks and 4 threads per 
+block.  Suppose the size of the vector is 1000.
+In answering these questions, you do not need to list every index, 
+but list enough so that it is clear what the missing indices are. 
+Be sure to give both the smallest index and the largest index. 
+
+total threads = 20
+"work" = 1000/20 = 50
+
+a. Using block partitioning, what are the indices of the elements
+in the vector that are operated on by thread 0 in block 0?
+0-49
+
+
+b. Using block partitioning, what are the indices of the elements
+in the vector that are operated on by thread 1 in block 0?
+50-99
+
+c. Using block partitioning, what are the indices of the elements
+in the vector that are operated on by thread 0 in block 1?
+200-249
+
+d. Using cyclic partitioning, what are the indices of the elements
+in the vector that are operated on by thread 0 in block 0?
+0, 20, 40, ...., 980
+
+e. Using cyclic partitioning, what are the indices of the elements
+in the vector that are operated on by thread 1 in block 0?
+1, 21, 41, ...., 981
+
+f. Using cyclic partitioning, what are the indices of the elements
+in the vector that are operated on by thread 0 in block 1?
+5, 25, 45, ...., 985
+
+2) Give the output of running your program like this:
+./vecScalarMult 81920000
+
+CPU:                            129.006912 msec
+GPU (blocked partitioning):     275.323151 msec
+Speedup:                        0.468565
+GPU (cyclic partitioning):      180.832733 msec
+Speedup:                        0.713405
+
+Note: the results will vary depending upon whether the optimization flags
+are used but that doesn't matter.  This question is simply to ensure that 
+your code works when the number of elements is a multiple (greater than
+one) of the total number of threads.
+
+3) Give the output of running your program like this:
+./vecScalarMult 81920001
+
+Timing
+------
+CPU:                            127.629280 msec
+GPU (blocked partitioning):     277.137939 msec
+Speedup:                        0.460526
+GPU (cyclic partitioning):      183.481094 msec
+Speedup:                        0.695599
+
+Note: this question checks that your code works when the number
+of elements isn't a multiple of the total number of threads.
+
+4) Run some more experiments using large enough vector sizes so that 
+the GPU performs better than the CPU for at least one of the partitioning
+methods.  Which kernel results in better performance, the one 
+using cyclic partitioning or the one using block partitioning?
+Cyclic (Although, CPU seems to always out perform GPU...?)
+
+5) Why does one kernel provide better performance than the other?
+Cyclic is better due to warps. Since only one thread needs to call the global memory, and it will cause all the other threads faster calls since they should be in the cache.
+

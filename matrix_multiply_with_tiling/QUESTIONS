@@ -1,0 +1,60 @@
+1) Show some output where the CPU version is the best.
+issaa@cudaserv:~/5500/prog6-teamred$ ./matMultiply 10
+
+Timing
+------
+CPU:                            0.002720 msec
+GPU (simple version):           0.162560 msec
+Speedup:                        0.016732
+GPU (tiled version):            0.135360 msec
+Speedup:                        0.020095
+GPU  (tiled2 version):          0.146144 msec
+Speedup:                        0.018612
+
+Performance: SIMPLE < TILED2 < TILED < CPU
+
+
+2) How can it be possible that the CPU version is better than any
+of the GPU versions?
+Speedy ALU,, less overhead for setting up threads...
+
+
+3) Explain why the SIMPLE version always (or almost always)
+performs worse than either of the tiled versions.
+Too many global access thus threads are slower to get data
+
+
+4) Show some output where the TILED2 version performs
+better than the TILED version (and both perform better than SIMPLE and
+CPU).
+We couldn't actually find numbers that do this under tile widths of 16, when we tried to increase it to 32 we get this:
+issaa@cudaserv:~/5500/prog6-teamred$ ./matMultiply 2000
+
+Timing
+------
+CPU:                            34658.933594 msec
+GPU (simple version):           258.035034 msec
+Speedup:                        134.318710
+GPU (tiled version):            305.294525 msec
+Speedup:                        113.526222
+GPU  (tiled2 version):          252.130081 msec
+Speedup:                        137.464493
+
+Performance: CPU < TILED < SIMPLE < TILED2
+
+If we did a bigger matrix we may see TILED be better than SIMPLE, but SIMPLE has too many threads to see this maybe...
+
+5) Explain why the TILED2 version performs better
+than the TILED version.
+TILED2 reuses memory/information that is in the shared memory instead of having to move it back in again.
+Namely, TILED2 uses Ms for two seperate Ns tiles, instead of once for one Ns tile, making it more efficent.
+
+6) Speculate about the performance of a TILED4. Will that definitely
+have better performance than the TILED2 version?  Why or why not?
+No. Threads will have to use more registers and resources, and thus TILED4 will have less parallalism.
+This could impact performance.
+
+
+
+
+
